@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Helper\" />
+    <Folder Include="Services\Abstraction\" />
+    <Folder Include="Services\Implementation\" />
+  </ItemGroup>
+
 </Project>
