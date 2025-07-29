@@ -7,10 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Database\" />
-    <Folder Include="Entities\" />
-    <Folder Include="Repo\Abstraction\" />
-    <Folder Include="Repo\Implementation\" />
+    <ProjectReference Include="..\FruitsAndVegetablesShopping.BLL\FruitsAndVegetablesShopping.BLL.csproj" />
   </ItemGroup>
 
 </Project>
