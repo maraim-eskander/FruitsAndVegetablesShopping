@@ -7,7 +7,7 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Abstraction
         (List<Product>, string?) GetAll();
         (Product?, string?) GetById(int id);
         (bool, string?) Create(Product product);
-        (bool, string) Update(Product product);
-        (bool, string) Delete(int id, string deletedBy);
+        (bool, string?) Update(int id, string name, double price, string image, int stock, string desc, int categoryId, string modifiedBy);
+        (bool, string?) Delete(int id, string deletedBy);
     }
 }

@@ -1,4 +1,5 @@
-﻿using FruitsAndVegetablesShopping.DAL.Entities;
+﻿using FruitsAndVegetablesShopping.DAL.Database;
+using FruitsAndVegetablesShopping.DAL.Entities;
 using FruitsAndVegetablesShopping.DAL.Repo.Abstraction;
 namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
 {
@@ -6,10 +7,10 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
     {
 
 
-        private readonly DbContext db;
+        private readonly ShoppingDbContext db;
 
 
-        public ProductRepo(DbContext db)
+        public ProductRepo(ShoppingDbContext db)
         {
             this.db = db;
         }
@@ -48,18 +49,15 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
             }
         }
 
-        public (bool, string) Update(Product product)
+        public (bool, string?) Update(int id, string name, double price, string image, int stock, string desc, int categoryId, string modifiedBy)
         {
             try
             {
-                var existing = db.Products.FirstOrDefault(p => p.Id == product.ProductId);
+                var existing = db.Products.FirstOrDefault(p => p.ProductId == id && p.IsDeleted == false);
                 if (existing == null)
                     return (false, "Product not found");
 
-                existing.Update(product.Name, product.Price, product.Image,
-                                product.Stock, product.Description,
-                                product.CategoryId, product.ModifiedBy);
-
+                existing.Update(name, price, image, stock, desc, categoryId, modifiedBy);
                 db.SaveChanges();
                 return (true, null);
             }
@@ -69,7 +67,7 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
             }
         }
 
-        public (bool, string) Delete(int id,string deletedBy)
+        public (bool, string?) Delete(int id,string deletedBy)
         {
             try
             {
