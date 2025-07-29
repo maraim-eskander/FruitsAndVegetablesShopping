@@ -1,19 +1,16 @@
-﻿using FruitsAndVegetablesShopping.DAL.Entities;
+﻿using FruitsAndVegetablesShopping.DAL.Database;
+using FruitsAndVegetablesShopping.DAL.Entities;
 using FruitsAndVegetablesShopping.DAL.Repo.Abstraction;
 namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
 {
     public class CategoryRepo: ICategoryRepo
     {
 
-
-
-
-
         
-         private readonly DbContext db;
+         private readonly ShoppingDbContext db;
 
      
-        public CategoryRepo(DbContext db)
+        public CategoryRepo(ShoppingDbContext db)
         {
             this.db = db;
         }

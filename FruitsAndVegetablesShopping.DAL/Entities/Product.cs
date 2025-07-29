@@ -34,7 +34,7 @@
             IsDeleted = false;
         }
 
-        public Product() { }
+         public Product() { }
         public void Update(string name, double price, string image, int stock, string desc, int categoryId  , string modifiedBy)
         {
             Name = name;

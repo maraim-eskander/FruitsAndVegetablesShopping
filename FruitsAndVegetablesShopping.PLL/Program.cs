@@ -1,3 +1,6 @@
+using FruitsAndVegetablesShopping.DAL.Database;
+using Microsoft.EntityFrameworkCore;
+
 namespace FruitsAndVegetablesShopping.PLL
 {
     public class Program
@@ -8,6 +11,17 @@ namespace FruitsAndVegetablesShopping.PLL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+
+            // Enhancement ConnectionString
+            var connectionString = builder.Configuration.GetConnectionString("defaultConnection");
+
+            builder.Services.AddDbContext<ShoppingDbContext>(options =>
+            options.UseSqlServer(connectionString));
+
+
+
+
 
             var app = builder.Build();
 
