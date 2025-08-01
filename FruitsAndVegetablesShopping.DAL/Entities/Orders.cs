@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace FruitsAndVegetablesShopping.DAL.Entities
 {
     public class Orders
@@ -7,6 +9,8 @@ namespace FruitsAndVegetablesShopping.DAL.Entities
         public float totalPrice { get; private set; }
 
         public int numOfItems { get; private set; }
+        [Required]
+        public  Delivery delivery { get; private set; }
 
         [Required]
         public DateTime CreatedOn { get; private set; } = DateTime.Now;

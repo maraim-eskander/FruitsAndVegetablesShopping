@@ -12,6 +12,7 @@ namespace FruitsAndVegetablesShopping.DAL.Database
         }
         public DbSet<Category> Categories{ get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Delivery> Deliveries { get; set; }
 
     }
 }
