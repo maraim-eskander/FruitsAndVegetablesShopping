@@ -35,6 +35,16 @@ public class ProductOrder
 
     public string? DeletedBy { get; private set; }
 
+    public ProductOrder(int orderid, int productid, int quantity, string? createdBy)
+    {
+        
+        Orderid = orderid;
+        Productid = productid;
+        Quantity = quantity;
+        CreatedOn = DateTime.Now;
+        CreatedBy = createdBy;
+    }
+
     public void delete(string deletedBy)
     {
         this.isDeleted = true;
