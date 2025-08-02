@@ -3,7 +3,7 @@ using FruitsAndVegetablesShopping.DAL.Entities;
 using FruitsAndVegetablesShopping.DAL.Repo.Abstraction;
 namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation{
   
-  public class CartRepo : ICartRepo
+ public class CartRepo : ICartRepo
 {
     private readonly Context db;
 
@@ -11,26 +11,26 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation{
     {
         this.db = db;
     }
-    public (bool, string?) Create(Cart cart)
+
+    public Task<(bool, string?)> CreateAsync(Cart cart)
     {
         try
         {
             db.Carts.Add(cart);
             db.SaveChanges();
-            return (true, null);
-
+            return Task.FromResult((true, (string?)null));
         }
         catch (Exception ex)
         {
-            return (false, ex.Message);
+            return Task.FromResult<(bool, string?)>((false, ex.Message));
         }
     }
 
-    public (bool, string?) Delete(int id)
+    public async Task<(bool, string?)> DeleteAsync(int id)
     {
         try
         {
-            var res = db.Carts.Where(a => a.Cart_id == id).FirstOrDefault();
+            var res = await db.Carts.Where(a => a.Cart_id == id).FirstOrDefaultAsync();
 
             if (res == null)
             {
@@ -47,11 +47,11 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation{
         }
     }
 
-    public (List<Cart>?, string?) GetAll()
+    public async Task<(List<Cart>?, string?)> GetAllAsync()
     {
         try
         {
-            var res = db.Carts.Where(a => a.isDeleted == false).ToList();
+            var res = await db.Carts.Where(a => a.isDeleted == false).ToListAsync();
 
             if (res == null)
             {
@@ -66,17 +66,16 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation{
         }
     }
 
-    public (Cart?, string?) GetById(int id)
+    public async Task<(Cart?, string?)> GetByIdAsync(int id)
     {
         try
         {
-            var res = db.Carts.Where(a => a.Cart_id == id).FirstOrDefault();
+            var res = await db.Carts.Where(a => a.Cart_id == id).FirstOrDefaultAsync();
 
             if (res == null)
             {
                 return (null, "Id does not exist in db");
             }
-
 
             return (res, null);
         }
