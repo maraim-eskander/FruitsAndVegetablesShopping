@@ -6,32 +6,32 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
 
 public class OrdersRepo : IOrdersRepo
 {
-
     private readonly Context db;
 
     public OrdersRepo(Context db)
     {
         this.db = db;
     }
-    public (bool, string?) Create(Orders order)
+
+    public async Task<(bool, string?)> CreateAsync(Orders order)
     {
         try
         {
-            db.Orders.Add(order);
+            await db.Orders.AddAsync(order);
             db.SaveChanges();
             return (true, null);
-
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             return (false, ex.Message);
         }
     }
 
-    public (bool, string) Edit(int id, float total, int cnt)
+    public async Task<(bool, string?)> EditAsync(int id, float total, int cnt)
     {
         try
         {
-            var res = db.Orders.Where(a => a.Order_id == id).FirstOrDefault();
+            var res = await db.Orders.FirstOrDefaultAsync(a => a.Order_id == id);
 
             if (res == null)
             {
@@ -48,58 +48,60 @@ public class OrdersRepo : IOrdersRepo
         }
     }
 
-    public (bool, string?) Delete(int id)
+    public async Task<(bool, string?)> DeleteAsync(int id)
     {
         try
         {
-            var res = db.Orders.Where(a => a.Order_id == id).FirstOrDefault();
+            var res = await db.Orders
+                .Include(o => o.customer)
+                .Include(o => o.ProductOrders) 
+                .FirstOrDefaultAsync(a => a.Order_id == id);
 
-            if(res == null)
+            if (res == null)
             {
                 return (false, "Does not exist in db");
             }
 
-            res.delete();
+            res.delete(res.customer.Name);
             db.SaveChanges();
             return (true, null);
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             return (false, ex.Message);
         }
     }
 
-    
-
-    public (List<Orders>?, string?) GetAll()
+    public async Task<(List<Orders>?, string?)> GetAllAsync()
     {
         try
         {
-            var res = db.Orders.Where(a=>a.isDeleted == false).ToList();
+            var res = await db.Orders.Where(a => !a.isDeleted).ToListAsync();
 
-            if(res == null)
+            if (res == null || res.Count == 0)
             {
                 return (null, "Db empty no list");
             }
 
             return (res, null);
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             return (null, ex.Message);
         }
     }
 
-    public (Orders?, string?) GetById(int id)
+    public async Task<(Orders?, string?)> GetByIdAsync(int id)
     {
         try
         {
-            var res = db.Orders.Where(a => a.Order_id == id).FirstOrDefault();
+            var res = await db.Orders.FirstOrDefaultAsync(a => a.Order_id == id);
 
             if (res == null)
             {
                 return (null, "Id does not exist in db");
             }
 
-            
             return (res, null);
         }
         catch (Exception ex)
@@ -108,6 +110,7 @@ public class OrdersRepo : IOrdersRepo
         }
     }
 }
-
-
 }
+
+
+
