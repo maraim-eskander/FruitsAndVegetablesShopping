@@ -55,9 +55,11 @@ public class ProductOrder
         this.DeletedOn = DateTime.Now;
     }
 
-    public void edit(int qty)
+    public void edit(int qty, string modifiedBy)
     {
         this.Quantity = qty;
+        this.ModifiedBy = modifiedBy;
+        this.ModifiedOn = DateTime.Now;
     }
 }
 }
