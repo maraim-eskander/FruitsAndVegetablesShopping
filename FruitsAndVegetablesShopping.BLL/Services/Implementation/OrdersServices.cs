@@ -45,7 +45,7 @@ namespace FruitsAndVegetablesShopping.BLL.Services.Implementation
             }
             else
             {
-                res3.Item1.edit(res3.Item1.Quantity + productOrderDTO.Quantity, createdBy);
+                productOrderRepo.Update(productOrderDTO.ProductOrderId, res3.Item1.Quantity + productOrderDTO.Quantity, createdBy);
             }
 
             await ordersRepo.save();
