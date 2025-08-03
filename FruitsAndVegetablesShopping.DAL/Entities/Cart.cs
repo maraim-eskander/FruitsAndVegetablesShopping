@@ -1,4 +1,5 @@
-
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace FruitsAndVegetablesShopping.DAL.Entities
 {
     public class Cart

@@ -1,26 +1,25 @@
 ﻿using FruitsAndVegetablesShopping.DAL.Database;
 using FruitsAndVegetablesShopping.DAL.Entities;
 using FruitsAndVegetablesShopping.DAL.Repo.Abstraction;
+using Microsoft.EntityFrameworkCore;
+
 namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
 {
-    public class ProductRepo: IProductRepo
+    public class ProductRepo : IProductRepo
     {
-
-
         private readonly ShoppingDbContext db;
-
 
         public ProductRepo(ShoppingDbContext db)
         {
             this.db = db;
         }
 
-        public (bool, string?) Create(Product product)
+        public async Task<(bool, string?)> CreateAsync(Product product)
         {
             try
             {
-                db.Products.Add(product);
-                db.SaveChanges();
+                await db.Products.AddAsync(product);
+                await db.SaveChangesAsync();
                 return (true, null);
             }
             catch (Exception ex)
@@ -29,16 +28,57 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
             }
         }
 
-
-        public (Product?, string?) GetById(int id)
+        public async Task<(bool, string?)> UpdateAsync(int id, string name, double price, string image, int stock, string desc, int categoryId, string modifiedBy)
         {
             try
             {
-                var res = db.Products.Where(p => p.ProductId == id).FirstOrDefault();
+                var res = await db.Products.Where(p => p.ProductId == id && !p.IsDeleted).FirstOrDefaultAsync();
 
                 if (res == null)
                 {
-                    return (null, "Product not found");
+                    return (false, "Product not found in database");
+                }
+
+                res.Update(name, price, image, stock, desc, categoryId, modifiedBy);
+                await db.SaveChangesAsync();
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
+        public async Task<(bool, string?)> DeleteAsync(int id, string deletedBy)
+        {
+            try
+            {
+                var res = await db.Products.Where(p => p.ProductId == id).FirstOrDefaultAsync();
+
+                if (res == null)
+                {
+                    return (false, "Product not found in database");
+                }
+
+                res.Delete(deletedBy);
+                await db.SaveChangesAsync();
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
+        public async Task<(List<Product>?, string?)> GetAllAsync()
+        {
+            try
+            {
+                var res = await db.Products.Where(p => !p.IsDeleted).ToListAsync();
+
+                if (res == null || res.Count == 0)
+                {
+                    return (null, "No products found in database");
                 }
 
                 return (res, null);
@@ -49,54 +89,57 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
             }
         }
 
-        public (bool, string?) Update(int id, string name, double price, string image, int stock, string desc, int categoryId, string modifiedBy)
+        public async Task<(Product?, string?)> GetByIdAsync(int id)
         {
             try
             {
-                var existing = db.Products.FirstOrDefault(p => p.ProductId == id && p.IsDeleted == false);
-                if (existing == null)
-                    return (false, "Product not found");
+                var res = await db.Products.Where(p => p.ProductId == id).FirstOrDefaultAsync();
 
-                existing.Update(name, price, image, stock, desc, categoryId, modifiedBy);
-                db.SaveChanges();
-                return (true, null);
-            }
-            catch (Exception ex)
-            {
-                return (false, ex.Message);
-            }
-        }
+                if (res == null)
+                {
+                    return (null, "Product not found in database");
+                }
 
-        public (bool, string?) Delete(int id,string deletedBy)
-        {
-            try
-            {
-                var product = db.Products.FirstOrDefault(p => p.ProductId == id);
-                if (product == null)
-                    return (false, "Product not found");
-
-                product.Delete(deletedBy);
-                db.SaveChanges();
-                return (true, null);
-            }
-            catch (Exception ex)
-            {
-                return (false, ex.Message);
-            }
-        }
-
-        public (List<Product>, string?) GetAll()
-        {
-            try
-            {
-                var res = db.Products.Where(p => p.IsDeleted == false).ToList();
                 return (res, null);
+            }
+            catch (Exception ex)
+            {
+                return (null, ex.Message);
+            }
+        }
+        public async Task<(List<Product>, string?)> GetByCategoryIdAsync(int categoryId)
+        {
+            try
+            {
+                var products = await db.Products.Where(p => p.CategoryId == categoryId && !p.IsDeleted).ToListAsync();
+
+                if (products == null || products.Count == 0)
+                    return (new List<Product>(), "No products found for this category");
+
+                return (products, null);
             }
             catch (Exception ex)
             {
                 return (new List<Product>(), ex.Message);
             }
         }
+        public async Task<(List<Product>?, string?)> SearchByNameAsync(string name)
+        {
+            try
+            {
+                var res = await db.Products.Include(p => p.Category) .Where(p => !p.IsDeleted && p.Name.Contains(name)).ToListAsync();
+
+                if (res == null || res.Count == 0)
+                    return (null, "No products found matching the search");
+
+                return (res, null);
+            }
+            catch (Exception ex)
+            {
+                return (null, ex.Message);
+            }
+        }
+
 
     }
 }

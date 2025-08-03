@@ -4,10 +4,10 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Abstraction
 {
     public interface ICategoryRepo
     {
-        (List<Category>, string?) GetAll();
-        (Category?, string?) GetById(int id);
-        (bool, string?) Create(Category category);
-        (bool, string?) Update(int id, string name, string modifiedBy);
-        (bool, string?) Delete(int id, string deletedBy);
+        Task<(bool, string?)> CreateAsync(Category category);
+        Task<(bool, string?)> UpdateAsync(int id, string name, string modifiedBy);
+        Task<(bool, string?)> DeleteAsync(int id, string deletedBy);
+        Task<(List<Category>?, string?)> GetAllAsync();
+        Task<(Category?, string?)> GetByIdAsync(int id);
     }
 }
