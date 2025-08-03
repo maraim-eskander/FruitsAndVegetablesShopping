@@ -1,26 +1,25 @@
 ﻿using FruitsAndVegetablesShopping.DAL.Database;
 using FruitsAndVegetablesShopping.DAL.Entities;
 using FruitsAndVegetablesShopping.DAL.Repo.Abstraction;
+using Microsoft.EntityFrameworkCore;
+
 namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
 {
-    public class CategoryRepo: ICategoryRepo
+    public class CategoryRepo : ICategoryRepo
     {
+        private readonly ShoppingDbContext db;
 
-        
-         private readonly ShoppingDbContext db;
-
-     
         public CategoryRepo(ShoppingDbContext db)
         {
             this.db = db;
         }
 
-        public (bool, string?) Create(Category category)
+        public async Task<(bool, string?)> CreateAsync(Category category)
         {
             try
             {
-                db.Categories.Add(category);
-                db.SaveChanges();
+                await db.Categories.AddAsync(category);
+                await db.SaveChangesAsync();
                 return (true, null);
             }
             catch (Exception ex)
@@ -29,50 +28,19 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
             }
         }
 
-
-public (Category?, string?) GetById(int id)
-{
-    try
-    {
-        var res = db.Categories.Where(c => c.CategoryId == id ).FirstOrDefault();
-
-        if (res == null)
-        {
-            return (null, "Category not found");
-        }
-
-        return (res, null);
-    }
-    catch (Exception ex)
-    {
-        return (null, ex.Message);
-    }
-}
-
-
-       
-        public (bool, string?) Update(int id, string name, string modifiedBy)
-{
-    var existing = db.Categories.Where(c => c.CategoryId == id).FirstOrDefault();
-    if (existing == null)
-        return (false, "Category not found");
-
-    existing.UpdateName(name, modifiedBy);
-    db.SaveChanges();
-    return (true, null);
-}
-
-      
-        public (bool, string?) Delete(int id, string deletedBy)
+        public async Task<(bool, string?)> UpdateAsync(int id, string name, string modifiedBy)
         {
             try
             {
-                var category = db.Categories.Where(c => c.CategoryId == id).FirstOrDefault();
-                if (category == null)
-                    return (false, "Category not found");
+                var res = await db.Categories.Where(c => c.CategoryId == id && !c.IsDeleted).FirstOrDefaultAsync();
 
-                category.Delete(deletedBy);
-                db.SaveChanges();
+                if (res == null)
+                {
+                    return (false, "Category not found in database");
+                }
+
+                res.UpdateName(name, modifiedBy);
+                await db.SaveChangesAsync();
                 return (true, null);
             }
             catch (Exception ex)
@@ -81,22 +49,64 @@ public (Category?, string?) GetById(int id)
             }
         }
 
-        public (List<Category>, string?) GetAll()
-      {   
-        try
-    {
-        var res = db.Categories.Where(c => c.IsDeleted == false).ToList();
-        return (res, null); 
-    }
-    catch (Exception ex)
-    {
-        return (new List<Category>(), ex.Message); 
+        public async Task<(bool, string?)> DeleteAsync(int id, string deletedBy)
+        {
+            try
+            {
+                var res = await db.Categories.Where(c => c.CategoryId == id).FirstOrDefaultAsync();
+
+                if (res == null)
+                {
+                    return (false, "Category not found in database");
+                }
+
+                res.Delete(deletedBy);
+                await db.SaveChangesAsync();
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
+        public async Task<(List<Category>?, string?)> GetAllAsync()
+        {
+            try
+            {
+                var res = await db.Categories.Include(c => c.Products) .Where(c => !c.IsDeleted).ToListAsync();
+
+                if (res == null || res.Count == 0)
+                {
+                    return (null, "No categories found in database");
+                }
+
+
+                return (res, null);
+            }
+            catch (Exception ex)
+            {
+                return (null, ex.Message);
+            }
+        }
+
+        public async Task<(Category?, string?)> GetByIdAsync(int id)
+        {
+            try
+            {
+                var res = await db.Categories.Include(c => c.Products) .Where(c => c.CategoryId == id && !c.IsDeleted).FirstOrDefaultAsync();
+
+                if (res == null)
+                {
+                    return (null, "Category not found in database");
+                }
+
+                return (res, null);
+            }
+            catch (Exception ex)
+            {
+                return (null, ex.Message);
+            }
+        }
     }
 }
-
-
-
-    }
-}
-
-     
