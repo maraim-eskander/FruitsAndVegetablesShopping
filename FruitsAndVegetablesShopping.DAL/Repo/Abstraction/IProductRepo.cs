@@ -11,6 +11,10 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Abstraction
         Task<(Product?, string?)> GetByIdAsync(int id);
         Task<(List<Product>, string?)> GetByCategoryIdAsync(int categoryId);
         Task<(List<Product>?, string?)> SearchByNameAsync(string name);
+        Task<(bool, string?)> UpdateStockAsync(int productId, int newStock, string modifiedBy);
+        Task<(bool, string?)> CheckStockAsync(int productId, int quantity);
+
+
 
     }
 }

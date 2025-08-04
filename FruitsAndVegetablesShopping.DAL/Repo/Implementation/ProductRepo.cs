@@ -139,6 +139,46 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
                 return (null, ex.Message);
             }
         }
+        public async Task<(bool, string?)> UpdateStockAsync(int productId, int newStock, string modifiedBy)
+        {
+            try
+            {
+                var product = await db.Products.Where(p => p.ProductId == productId && !p.IsDeleted).FirstOrDefaultAsync();
+
+                if (product == null)
+                    return (false, "Product not found");
+
+                product.UpdateStock(newStock, modifiedBy);
+
+                await db.SaveChangesAsync();
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
+        public async Task<(bool, string?)> CheckStockAsync(int productId, int quantity)
+        {
+            try
+            {
+                var product = await db.Products.Where(p => p.ProductId == productId && !p.IsDeleted).FirstOrDefaultAsync();
+
+                if (product == null)
+                    return (false, "Product not found");
+
+                if (product.Stock < quantity)
+                    return (false, $"Only {product.Stock} units available");
+
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
 
 
     }
