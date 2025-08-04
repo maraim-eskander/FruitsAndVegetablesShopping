@@ -109,6 +109,39 @@ namespace FruitsAndVegetablesShopping.BLL.Services.Implementation
                 return (false, ex.Message);
             }
         }
+
+        public async Task<(List<ReadProductDto>, string?)> GetByCategoryIdAsync(int categoryId)
+        {
+            try
+            {
+                var (products, error) = await productRepo.GetByCategoryIdAsync(categoryId);
+
+                if (products == null)
+                    return (new List<ReadProductDto>(), error);
+               
+                if (products.Count == 0)
+                    return (new List<ReadProductDto>(), "No products found for this category");
+                
+
+                var dtoList = products.Select(p => new ReadProductDto
+                {
+                    Name = p.Name,
+                    Price = p.Price,
+                    Image = p.Image,
+                    Stock = p.Stock,
+                    Description = p.Description,
+                    CategoryName = p.Category?.Name ?? "",
+                    CreatedOn = p.CreatedOn
+                }).ToList();
+
+                return (dtoList, null);
+            }
+            catch (Exception ex)
+            {
+                return (new List<ReadProductDto>(), ex.Message);
+            }
+        }
+
         public async Task<(List<ReadProductDto>, string?)> SearchByNameAsync(string name)
         {
             var (products, error) = await productRepo.SearchByNameAsync(name);
@@ -128,6 +161,73 @@ namespace FruitsAndVegetablesShopping.BLL.Services.Implementation
 
             return (dtoList, null);
         }
+        public async Task<(bool, string?)> IncreaseStockAsync(int productId, int amount, string modifiedBy)
+        {
+            try
+            {
+                if (amount <= 0)
+                    return (false, "Amount must be positive");
+
+                var (product, error) = await productRepo.GetByIdAsync(productId);
+                if (product == null)
+                    return (false, error ?? "Product not found");
+
+                int newStock = product.Stock + amount;
+                return await productRepo.UpdateStockAsync(productId, newStock, modifiedBy);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
+        public async Task<(bool, string?)> DecreaseStockAsync(int productId, int amount, string modifiedBy)
+        {
+            try
+            {
+                if (amount <= 0)
+                    return (false, "Amount must be positive");
+
+                var (checkSuccess, checkError) = await productRepo.CheckStockAsync(productId, amount);
+                if (!checkSuccess)
+                    return (false, checkError);
+
+                var (product, error) = await productRepo.GetByIdAsync(productId);
+                if (product == null)
+                    return (false, error ?? "Product not found");
+
+                int newStock = product.Stock - amount;
+                return await productRepo.UpdateStockAsync(productId, newStock, modifiedBy);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
+        public async Task<(bool, string?)> UpdateStockAsync(int productId, int newStock, string modifiedBy)
+        {
+            if (newStock < 0)
+                return (false, "Stock cannot be negative");
+            return await productRepo.UpdateStockAsync(productId, newStock, modifiedBy);
+        }
+
+        public async Task<(bool, string?)> CheckStockAsync(int productId, int quantity)
+        {
+            try
+            {
+                var (success, error) = await productRepo.CheckStockAsync(productId, quantity);
+                if (!success)
+                    return (false, error);
+
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
 
     }
 }
