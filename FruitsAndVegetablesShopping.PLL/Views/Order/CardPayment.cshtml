@@ -1,0 +1,96 @@
+@{
+    
+    Layout = "~/Views/Shared/newLayout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Material Design for Bootstrap</title>
+    <!-- MDB icon -->
+    <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" />
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+    <!-- MDB -->
+    <link rel="stylesheet" href="css/bootstrap-payment-forms.min.css" />
+</head>
+
+<body>
+    <!-- Start your project here-->
+
+    <style>
+        .gradient-custom {
+            background: radial-gradient(50% 123.47% at 50% 50%, #00FF94 0%, #720059 100%), linear-gradient(121.28deg, #669600 0%, #FF0000 100%), linear-gradient(360deg, #0029FF 0%, #8FFF00 100%), radial-gradient(100% 164.72% at 100% 100%, #6100FF 0%, #00FF57 100%), radial-gradient(100% 148.07% at 0% 0%, #FFF500 0%, #51D500 100%);
+            background-blend-mode: screen, color-dodge, overlay, difference, normal;
+        }
+    </style>
+    <section class="gradient-custom d-flex align-items-center justify-content-center py-5" style="min-height: calc(100vh - 136px);">
+        <div class="card shadow" style="border-radius: 15px; max-width: 420px; width: 100%;">
+            <div class="card-body p-4">
+                <form>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="form-outline flex-grow-1 me-2">
+                            <input type="text"
+                                   id="typeText"
+                                   class="form-control form-control-lg"
+                                   placeholder="1234 5678 9012 3457"
+                                   minlength="19"
+                                   maxlength="19" required />
+                            <label class="form-label" for="typeText">Card Number</label>
+                        </div>
+                        <img src="https://img.icons8.com/color/48/000000/visa.webp"
+                             alt="visa"
+                             width="64px" />
+                    </div>
+
+                    <div class="form-outline mb-4">
+                        <input type="text"
+                               id="typeName"
+                               class="form-control form-control-lg"
+                               placeholder="Cardholder's Name"
+                               required />
+                        <label class="form-label" for="typeName">Cardholder's Name</label>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pb-2">
+                        <div class="form-outline me-2">
+                            <input type="text"
+                                   id="typeExp"
+                                   class="form-control form-control-lg"
+                                   placeholder="MM/YYYY"
+                                   minlength="7"
+                                   maxlength="7"
+                                   required />
+                            <label class="form-label" for="typeExp">Expiration</label>
+                        </div>
+                        <div class="form-outline me-2">
+                            <input type="password"
+                                   id="typeCvv"
+                                   class="form-control form-control-lg"
+                                   placeholder="•••"
+                                   minlength="3"
+                                   maxlength="3"
+                                   required />
+                            <label class="form-label" for="typeCvv">CVV</label>
+                        </div>
+                        <button type="submit" class="btn btn-info btn-lg btn-rounded">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- End your project here-->
+    <!-- MDB -->
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <!-- Custom scripts -->
+    <script type="text/javascript"></script>
+</body>
+
+</html>
