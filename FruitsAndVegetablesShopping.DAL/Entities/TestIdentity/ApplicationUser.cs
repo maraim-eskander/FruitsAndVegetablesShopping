@@ -1,3 +1,5 @@
+using FruitsAndVegetablesShopping.DAL.Entities;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;

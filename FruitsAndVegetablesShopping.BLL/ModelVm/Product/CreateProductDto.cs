@@ -1,4 +1,5 @@
-﻿namespace FruitsAndVegetablesShopping.BLL.ModelVm.Product
+﻿using Microsoft.AspNetCore.Http;
+namespace FruitsAndVegetablesShopping.BLL.ModelVm.Product
 {
     public class CreateProductDto
     {
@@ -9,5 +10,7 @@
         public string Description { get; set; }
         public int CategoryId { get; set; }   
         public string CreatedBy { get; set; }
+
+         public IFormFile? File { get; set; }
     }
 }

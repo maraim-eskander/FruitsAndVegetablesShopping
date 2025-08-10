@@ -1,0 +1,18 @@
+﻿@model FruitsAndVegetablesShopping.BLL.ModelVm.Product.ReadProductDto
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<h2>@Model.Name</h2>
+
+<p><strong>Price:</strong> @Model.Price.ToString("C")</p>
+<p><strong>Stock:</strong> @Model.Stock</p>
+<p><strong>Description:</strong> @Model.Description</p>
+
+@if (!string.IsNullOrEmpty(Model.Image))
+{
+    <img src="@Model.Image" alt="@Model.Name" style="max-width: 300px;" />
+}
+
+<a asp-action="GetAll" class="btn btn-secondary mt-3">Back to Products</a>

@@ -1,0 +1,27 @@
+﻿@model FruitsAndVegetablesShopping.BLL.ModelVm.Product.ReadProductDto
+
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<h2>Delete Product</h2>
+
+<h4>Are you sure you want to delete this product?</h4>
+
+<div>
+    <p><strong>Name:</strong> @Model.Name</p>
+    <p><strong>Price:</strong> @Model.Price.ToString("C")</p>
+    <p><strong>Stock:</strong> @Model.Stock</p>
+    <p><strong>Description:</strong> @Model.Description</p>
+
+    @if (!string.IsNullOrEmpty(Model.Image))
+    {
+        <img src="@Model.Image" alt="@Model.Name" style="max-width:150px;" />
+    }
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="ProductId" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="GetAll" class="btn btn-secondary">Cancel</a>
+</form>

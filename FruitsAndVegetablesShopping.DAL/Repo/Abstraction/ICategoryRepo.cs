@@ -9,5 +9,6 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Abstraction
         Task<(bool, string?)> DeleteAsync(int id, string deletedBy);
         Task<(List<Category>?, string?)> GetAllAsync();
         Task<(Category?, string?)> GetByIdAsync(int id);
+        Task<(Category?, string?)> GetByNameAsync(string name);
     }
 }

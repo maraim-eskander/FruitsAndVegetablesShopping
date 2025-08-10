@@ -1,0 +1,35 @@
+﻿@model FruitsAndVegetablesShopping.BLL.ModelVm.Category.ReadCategoryDto
+
+@{
+    ViewData["Title"] = "Category Details";
+}
+
+<h2>Category Details</h2>
+
+<div>
+    <strong>Name:</strong> @Model.Name
+</div>
+
+<div>
+    <strong>Products:</strong>
+    @if (Model.Products != null && Model.Products.Any())
+    {
+        <ul>
+            @foreach (var product in Model.Products)
+            {
+                <li>@product</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <span>No products in this category.</span>
+    }
+</div>
+
+<a asp-action="GetAll" class="btn btn-secondary">Back to List</a>
+@if (User.IsInRole("Admin"))
+{
+    <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+}
