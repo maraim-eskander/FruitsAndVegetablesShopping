@@ -1,0 +1,82 @@
+@model MVC_Group7_demo_BLL.ModelVM.OrderEditDTO
+
+@{
+    ViewData["Title"] = "Edit Order";
+    Layout = "~/Views/Shared/newLayout.cshtml";
+}
+
+<h2 class="mb-4">Edit Your Order</h2>
+
+@if (Model == null || Model.ProductOrders == null || !Model.ProductOrders.Any())
+{
+    <div class="alert alert-warning">
+        You don’t have any active orders.
+    </div>
+    <a asp-action="Index" asp-controller="Products" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+}
+else
+{
+    <form asp-action="EditOrder" asp-controller="Order" method="post">
+        <input type="hidden" asp-for="OrderId" />
+        <input type="hidden" asp-for="CustomerId" />
+
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Product</th>
+                    <th>Image</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.ProductOrders.Count; i++)
+                {
+                    <tr>
+                        <td>@Model.ProductOrders[i].ProductName</td>
+                        <input type="hidden" asp-for="ProductOrders[i].ProductName" />
+                        <td>
+                            @if (!string.IsNullOrEmpty(Model.ProductOrders[i].ProductImage))
+                            {
+                                <img src="@Model.ProductOrders[i].ProductImage" alt="@Model.ProductOrders[i].ProductName" style="height:60px; object-fit:cover;" />
+                            }
+                            else
+                            {
+                                <img src="https://dummyimage.com/60x60/dee2e6/6c757d.jpg" alt="@Model.ProductOrders[i].ProductName" />
+                            }
+                            <input type="hidden" asp-for="ProductOrders[i].ProductImage" />
+                        </td>
+                        <td>
+                            <input asp-for="ProductOrders[i].Quantity" type="number" min="1" max="@Model.ProductOrders[i].Stock" class="form-control" />
+                        </td>
+                        <td>$@Model.ProductOrders[i].UnitPrice.ToString("F2")
+                            <input type="hidden" asp-for="ProductOrders[i].UnitPrice" />
+                        </td>
+                        <td class="text-center">
+                            <input asp-for="ProductOrders[i].Remove" type="checkbox" class="form-check-input" />
+                        </td>
+                        <td class="text-center">
+                            <span>@Model.ProductOrders[i].ProductOrderId</span>
+                        </td>
+                        <input type="hidden" asp-for="ProductOrders[i].ProductOrderId" />
+                        <input type="hidden" asp-for="ProductOrders[i].ProductId" />
+                        <input type="hidden" asp-for="ProductOrders[i].Stock" />
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i> Apply Changes
+            </button>
+
+            <a asp-action="ViewOrder" asp-controller="Order" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+    </form>
+}
