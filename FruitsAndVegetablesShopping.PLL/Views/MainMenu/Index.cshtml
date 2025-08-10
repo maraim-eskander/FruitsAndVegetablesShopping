@@ -1,0 +1,133 @@
+@model List<MVC_Group7_demo_BLL.ModelVM.ReadProductDto>
+@{
+    ViewData["Title"] = "Shop Homepage";
+    Layout = "~/Views/Shared/newLayout.cshtml"; 
+}
+
+<!-- Header-->
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Shop in style</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Browse our amazing products</p>
+            @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
+            {
+                <p class="text-white-50">Showing results for: <strong>@ViewBag.SearchTerm</strong></p>
+            }
+        </div>
+    </div>
+</header>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Section-->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                @ViewBag.ErrorMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (Model == null || Model.Count == 0)
+        {
+            <div class="text-center">
+                <h3>No products available at the moment.</h3>
+                <p>Please check back later!</p>
+            </div>
+        }
+        else
+        {
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                @foreach (var product in Model)
+                {
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Stock Badge -->
+                            @if (product.Stock <= 5 && product.Stock > 0)
+                            {
+                                <div class="badge bg-warning text-dark position-absolute" style="top: 0.5rem; right: 0.5rem">Low Stock</div>
+                            }
+                            else if (product.Stock == 0)
+                            {
+                                <div class="badge bg-danger text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Out of Stock</div>
+                            }
+
+                            <!-- Product image-->
+                            @if (!string.IsNullOrEmpty(product.Image))
+                            {
+                                <img class="card-img-top" src="@product.Image" alt="@product.Name" style="height: 200px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="@product.Name" />
+                            }
+
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">@product.Name</h5>
+                                    <!-- Product category -->
+                                    @if (!string.IsNullOrEmpty(product.CategoryName))
+                                    {
+                                        <small class="text-muted">@product.CategoryName</small>
+                                    }
+                                    <!-- Product description -->
+                                    <p class="small mt-2">@(product.Description?.Length > 50 ? product.Description.Substring(0, 50) + "..." : product.Description)</p>
+                                    <!-- Product price-->
+                                    <div class="mt-2">
+                                        <span class="h5">$@product.Price.ToString("F2")</span>
+                                    </div>
+                                    <!-- Stock info -->
+                                    <small class="text-muted">Stock: @product.Stock</small>
+                                </div>
+                            </div>
+
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center">
+                                    @if (product.Stock > 0)
+                                    {
+                                        <form asp-action="AddToOrder" method="post" class="d-flex justify-content-center align-items-center gap-2">
+                                            <!-- Hidden ProductId -->
+                                            <input type="hidden" name="ProductId" value="@product.ProductId" />
+
+                                            <!-- Quantity input -->
+                                            <input type="number" name="Quantity" value="1" min="1" max="@product.Stock" class="form-control form-control-sm" style="width: 70px;" />
+
+                                            <!-- Submit button -->
+                                            <button type="submit" class="btn btn-outline-dark btn-sm">Add to Order</button>
+
+                                            
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-secondary mt-auto" disabled>Out of Stock</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
