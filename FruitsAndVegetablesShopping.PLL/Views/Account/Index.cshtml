@@ -1,0 +1,44 @@
+@using MVC_Group7_demo_BLL.ModelVM
+@model RegisterVM
+@{
+    Layout = "/Views/Shared/newLayout.cshtml";
+}
+<div class="card">
+    <div class="card-header">
+        Sign Up
+    </div>
+    <div class="card-body">
+        <form asp-controller="Account" asp-action="SignUp" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Name</label>
+                <input asp-for="Name" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Email</label>
+                <input asp-for="Email" type="email" class="form-control" id="exampleInputPassword1">
+            </div>
+
+            
+
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">PhoneNumber</label>
+                <input asp-for="Phone" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Location</label>
+                <input asp-for="Location" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div>
+
+            
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
