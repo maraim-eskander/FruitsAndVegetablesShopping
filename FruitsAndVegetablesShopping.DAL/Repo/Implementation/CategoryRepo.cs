@@ -108,5 +108,18 @@ namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
                 return (null, ex.Message);
             }
         }
+        public async Task<(Category?, string?)> GetByNameAsync(string name)
+        {
+            try
+            {
+                var res = await db.Categories.Include(c => c.Products).Where(c => c.Name.ToLower() == name.ToLower() && !c.IsDeleted).FirstOrDefaultAsync();
+
+                return (res, null);
+            }
+            catch (Exception ex)
+            {
+                return (null, ex.Message);
+            }
+        }
     }
 }

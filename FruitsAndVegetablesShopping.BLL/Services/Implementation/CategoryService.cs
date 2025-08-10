@@ -8,10 +8,12 @@ namespace FruitsAndVegetablesShopping.BLL.Services.Implementation
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepo categoryRepo;
+        private readonly IProductRepo productRepo; // You'll need to inject this
 
-        public CategoryService(ICategoryRepo categoryRepo)
+        public CategoryService(ICategoryRepo categoryRepo, IProductRepo productRepo)
         {
             this.categoryRepo = categoryRepo;
+            this.productRepo = productRepo;
         }
 
         public async Task<(bool, string?)> CreateAsync(CreateCategoryDto dto)
@@ -35,6 +37,7 @@ namespace FruitsAndVegetablesShopping.BLL.Services.Implementation
 
             var dtoList = categories.Select(c => new ReadCategoryDto
             {
+                Id = c.CategoryId,
                 Name = c.Name,
                 Products = c.Products.Select(p => p.Name).ToList()
             }).ToList();
@@ -50,6 +53,7 @@ namespace FruitsAndVegetablesShopping.BLL.Services.Implementation
 
             var dto = new ReadCategoryDto
             {
+                Id = category.CategoryId,
                 Name = category.Name,
                 Products = category.Products.Select(p => p.Name).ToList()
             };
@@ -73,11 +77,45 @@ namespace FruitsAndVegetablesShopping.BLL.Services.Implementation
         {
             try
             {
+               
+                var (generalCategory, createError) = await GetOrCreateGeneralCategory(deletedBy);
+                if (generalCategory == null)
+                    return (false, $"Failed to create General category: {createError}");
+
+                
+                var moveResult = await productRepo.MoveCategoryProductsAsync(id, generalCategory.CategoryId, deletedBy);
+                if (!moveResult.success)
+                    return (false, $"Failed to move products: {moveResult.error}");
+
+             
                 return await categoryRepo.DeleteAsync(id, deletedBy);
             }
             catch (Exception ex)
             {
                 return (false, ex.Message);
+            }
+        }
+
+        private async Task<(Category?, string?)> GetOrCreateGeneralCategory(string createdBy)
+        {
+            try
+            {
+               
+                var (existingCategory, _) = await categoryRepo.GetByNameAsync("General");
+                if (existingCategory != null)
+                    return (existingCategory, null);
+
+                var generalCategory = new Category("General", createdBy);
+                var (success, error) = await categoryRepo.CreateAsync(generalCategory);
+
+                if (!success)
+                    return (null, error);
+
+                return await categoryRepo.GetByNameAsync("General");
+            }
+            catch (Exception ex)
+            {
+                return (null, ex.Message);
             }
         }
     }

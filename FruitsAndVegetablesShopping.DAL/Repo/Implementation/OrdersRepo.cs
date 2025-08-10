@@ -1,4 +1,5 @@
-﻿using FruitsAndVegetablesShopping.DAL.Database;
+﻿
+using FruitsAndVegetablesShopping.DAL.Database;
 using FruitsAndVegetablesShopping.DAL.Entities;
 using FruitsAndVegetablesShopping.DAL.Repo.Abstraction;
 namespace FruitsAndVegetablesShopping.DAL.Repo.Implementation
@@ -111,6 +112,4 @@ public class OrdersRepo : IOrdersRepo
     }
 }
 }
-
-
 

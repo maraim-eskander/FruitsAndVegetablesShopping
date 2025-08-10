@@ -1,3 +1,5 @@
+using FruitsAndVegetablesShopping.BLL.Services.Abstraction;
+using FruitsAndVegetablesShopping.BLL.Services.Implementation;
 using FruitsAndVegetablesShopping.DAL.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,8 +22,8 @@ namespace FruitsAndVegetablesShopping.PLL
             options.UseSqlServer(connectionString));
 
 
-
-
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
 
             var app = builder.Build();
 

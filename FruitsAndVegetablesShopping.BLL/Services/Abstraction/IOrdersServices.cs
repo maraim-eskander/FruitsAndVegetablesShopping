@@ -1,4 +1,5 @@
-﻿using FruitsAndVegetablesShopping.BLL.ModelVm.Product;
+﻿
+using FruitsAndVegetablesShopping.BLL.ModelVm.Product;
 namespace FruitsAndVegetablesShopping.BLL.Services.Abstraction
 {
 public interface IOrdersServices

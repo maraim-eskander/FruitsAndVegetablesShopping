@@ -1,0 +1,22 @@
+﻿@model FruitsAndVegetablesShopping.BLL.ModelVm.Category.UpdateCategoryDto
+
+@{
+    ViewData["Title"] = "Update Category";
+}
+
+<h2>Update Category</h2>
+
+<form asp-action="Update" method="post">
+    @Html.HiddenFor(m => m.Id) 
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a asp-action="GetAll" class="btn btn-secondary">Back to List</a>
+</form>

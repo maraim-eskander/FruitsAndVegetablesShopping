@@ -41,7 +41,7 @@
         }
 
         public Product() { }
-        public void Update(string name, double price, string image, int stock, string desc, int categoryId  , string modifiedBy)
+        public void Update(string name, double price, string image, int stock, string desc,  string modifiedBy)
         {
             Name = name;
             Price = price;
@@ -56,6 +56,12 @@
             IsDeleted = true;
             DeletedOn = DateTime.Now;
             DeletedBy = deletedBy;
+        }
+        public void UpdateCategory(int newCategoryId, string modifiedBy)
+        {
+            CategoryId = newCategoryId;
+            ModifiedOn = DateTime.Now;
+            ModifiedBy = modifiedBy;
         }
     }
 }
